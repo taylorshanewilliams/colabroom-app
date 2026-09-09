@@ -1,0 +1,11 @@
+# app.colabroom.com — the app itself.
+#
+# Deliberately kept out of the index. This is a Flutter build that renders to
+# a canvas: there is no DOM, so every page here is a blank document with a
+# script tag as far as a crawler is concerned. An indexed blank page is worse
+# than no page — it competes with colabroom.com for the same terms and wins
+# nothing.
+#
+# Everything meant to be found lives on colabroom.com, which is real HTML.
+User-agent: *
+Disallow: /
