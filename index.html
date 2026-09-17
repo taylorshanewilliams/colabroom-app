@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- TEMPORARY history probe, 17 Sep 2026: records history calls to this browser's own localStorage only. Remove after diagnosis. -->
-  <script>
-  (function(){try{
-    var KEY='colabroom_history_probe',t0=performance.now(),nav=(performance.getEntriesByType('navigation')||[])[0]||{};
-    var log=function(kind,detail){try{var a=JSON.parse(localStorage.getItem(KEY)||'[]');a.push({t:Math.round(performance.now()-t0),kind:kind,detail:String(detail).slice(0,160),len:history.length,pre:!!document.prerendering,state:JSON.stringify(history.state)});localStorage.setItem(KEY,JSON.stringify(a.slice(-60)));}catch(e){}};
-    localStorage.setItem(KEY,'[]');
-    log('load','activationStart='+Math.round(nav.activationStart||0)+' type='+nav.type+' prerendering='+(!!document.prerendering));
-    ['go','back','forward','pushState','replaceState'].forEach(function(n){var o=History.prototype[n];History.prototype[n]=function(){log('h.'+n,JSON.stringify([].slice.call(arguments)));return o.apply(this,arguments);};});
-    addEventListener('popstate',function(e){log('popstate',JSON.stringify(e.state));});
-    document.addEventListener('prerenderingchange',function(){log('activated','len now '+history.length);});
-    addEventListener('pagehide',function(){log('pagehide','');});
-  }catch(e){}})();
-  </script>
   <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.
