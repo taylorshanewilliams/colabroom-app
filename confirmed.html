@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    Where the link in a confirmation email lands (BetaConfig.confirmEmailUrl):
+    a new account's, and an email change's from Account.
+
+    It used to land on com.colabroom.beta://login-callback, a scheme only a
+    phone with the app can open, so a person who read their email on a
+    laptop confirmed the account and was shown a broken address (the human
+    test, 22 September 2026). This page works on any device.
+
+    What a static page can do here, and what it cannot:
+
+      * By the time anybody sees this page Supabase has already confirmed
+        the address; the link went through Supabase first. So it can say so.
+      * It cannot sign anybody in. The code on the address can only be
+        exchanged by the device that asked for it (PKCE), which is the phone
+        or browser the account was made on. So on a phone it offers "Open in
+        the app", which hands the code to the app's own callback, and the
+        app signs in if it is that phone. Anywhere else it says to sign in.
+      * It cannot tell an expired link from a used one; Supabase says only
+        that the link did not work, and so does this page.
+      * It shows none of the address's words. Anything written on the page
+        is one of the sentences below, so a crafted link cannot put its own
+        words on colabroom's own domain.
+
+    No script or font from anywhere else, and nothing is stored.
+  -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>CoLabRoom · Confirm your email</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #030812;
+      color: #F8FBFF;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+    }
+    main {
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 460px;
+      padding: 28px 16px;
+      text-align: center;
+    }
+    .mark { font-weight: 900; letter-spacing: 0.5px; font-size: 22px; margin-bottom: 28px; }
+    .mark span { color: #3AD3FF; }
+    h1 { font-size: 28px; margin: 0 0 10px; }
+    p { margin: 0 0 12px; }
+    .muted { color: #91A0BB; font-size: 15px; }
+    .button {
+      display: inline-block;
+      margin: 10px 0 14px;
+      padding: 14px 22px;
+      border-radius: 12px;
+      background: #3AD3FF;
+      color: #030812;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    a { color: #3AD3FF; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="mark">CoLab<span>Room</span></div>
+
+    <!-- Without a script the page cannot read the address, so it says only
+         what is true either way. -->
+    <section id="neutral">
+      <h1>Nearly there</h1>
+      <p>If this link has not expired, your email is confirmed.</p>
+      <p class="muted">Open CoLabRoom and sign in.</p>
+    </section>
+
+    <section id="confirmed" hidden>
+      <h1>Your email is confirmed</h1>
+      <p id="on-a-phone" hidden>
+        <a class="button" id="open-in-the-app" href="com.colabroom.beta://login-callback">Open in the app</a>
+      </p>
+      <p class="muted" id="phone-after" hidden>If the app does not open, open CoLabRoom yourself and sign in.</p>
+      <p class="muted" id="on-a-computer" hidden>
+        Now open CoLabRoom on your phone and sign in. You can also
+        <a href="https://app.colabroom.com/">sign in here</a>.
+      </p>
+    </section>
+
+    <section id="halfway" hidden>
+      <h1>That link worked</h1>
+      <p>If a link was sent to your other address as well, open that one too. Your email changes once both are open.</p>
+    </section>
+
+    <section id="expired" hidden>
+      <h1>That link did not work</h1>
+      <p>It may have expired, or been used already.</p>
+      <p class="muted">Open CoLabRoom and sign in. If it says your email is not confirmed yet, press Send the link again there.</p>
+    </section>
+
+    <p class="muted" style="margin-top: 28px">
+      Stuck? <a href="mailto:support@colabroom.com?subject=Confirming%20my%20CoLabRoom%20account">Ask a person</a>
+      at support@colabroom.com.
+    </p>
+  </main>
+  <script>
+    (function () {
+      function params(text) {
+        try { return new URLSearchParams(text.replace(/^[?#]/, '')); } catch (e) { return new URLSearchParams(''); }
+      }
+      var query = params(window.location.search);
+      var hash = params(window.location.hash);
+      function said(name) { return query.get(name) || hash.get(name); }
+      function show(id) {
+        document.getElementById('neutral').hidden = true;
+        document.getElementById(id).hidden = false;
+      }
+
+      if (said('error') || said('error_code') || said('error_description')) {
+        show('expired');
+        return;
+      }
+      var code = query.get('code');
+      if (code && /^[A-Za-z0-9._-]{8,200}$/.test(code)) {
+        show('confirmed');
+        var phone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (phone) {
+          // Only the code, never the rest of the address: the app's own
+          // callback exchanges it, on the phone that asked for it.
+          document.getElementById('open-in-the-app').href =
+            'com.colabroom.beta://login-callback?code=' + encodeURIComponent(code);
+          document.getElementById('on-a-phone').hidden = false;
+          document.getElementById('phone-after').hidden = false;
+        } else {
+          document.getElementById('on-a-computer').hidden = false;
+        }
+        return;
+      }
+      if (said('message')) {
+        // Supabase's own words are not shown: see the note at the top.
+        show('halfway');
+      }
+    })();
+  </script>
+</body>
+</html>

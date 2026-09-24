@@ -12,7 +12,8 @@
           { "/": "/musician/*" },
           { "/": "/heard/*" },
           { "/": "/set/*" },
-          { "/": "/r/*", "comment": "A moment of a recording, inside a room" }
+          { "/": "/r/*", "comment": "A moment of a recording, inside a room" },
+          { "/": "/camera/*", "comment": "Your own phone, as a second camera on your hands" }
         ]
       }
     ]
