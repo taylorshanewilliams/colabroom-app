@@ -18,7 +18,30 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Songwriting for musicians.">
+  <meta name="description" content="Bring a song, a part, or an idea. Make it together in CoLabRoom.">
+  <link rel="canonical" href="https://app.colabroom.com/">
+
+  <!-- One public card for the app. Private songs and invitation details stay
+       behind sign-in; preview clients do not run Flutter to read these tags.
+       No og:url: this page is also 404.html and answers /?invite=CODE, and an
+       og:url naming the root would declare every pasted link to be the root.
+       rel=canonical still names the root, and some crawlers infer og:url from
+       it; the paste test at the web republish settles which clients keep the
+       invitation's code. -->
+  <meta property="og:title" content="Come make music">
+  <meta property="og:description" content="Bring a song, a part, or an idea. Make it together in CoLabRoom.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CoLabRoom">
+  <meta property="og:image" content="https://colabroom.com/share.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="CoLabRoom. Songwriting for musicians who aren't in the same room. Record a riff. Somebody else sings over it from anywhere.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Come make music">
+  <meta name="twitter:description" content="Bring a song, a part, or an idea. Make it together in CoLabRoom.">
+  <meta name="twitter:image" content="https://colabroom.com/share.png">
+  <meta name="twitter:image:alt" content="CoLabRoom. Songwriting for musicians who aren't in the same room. Record a riff. Somebody else sings over it from anywhere.">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -29,7 +52,7 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>CoLabRoom</title>
+  <title>Come make music — CoLabRoom</title>
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
